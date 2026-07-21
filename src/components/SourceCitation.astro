@@ -1,0 +1,13 @@
+---
+interface Props { sourceIds: string[]; scope: string; }
+const { sourceIds, scope } = Astro.props;
+---
+<section class="card" aria-labelledby="sources-title">
+  <span class="eyebrow">Sources</span>
+  <h2 id="sources-title">Source scope and verification</h2>
+  <p>{scope}</p>
+  {sourceIds.length > 0 && (
+    <p class="muted">Source IDs on this page: {sourceIds.join(', ')}</p>
+  )}
+  <p><a href="/sources/">See sources, corrections, and editorial limits</a></p>
+</section>

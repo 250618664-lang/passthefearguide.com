@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import QuickAnswer from '../components/QuickAnswer.astro';
+import UpdateTimeline from '../components/UpdateTimeline.astro';
+import ConfirmedFacts from '../components/ConfirmedFacts.astro';
+import NotConfirmed from '../components/NotConfirmed.astro';
+import FaqList from '../components/FaqList.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import SourceCitation from '../components/SourceCitation.astro';
+import { enabledGuides } from '../data/guides';
+import { updates } from '../data/updates';
+import { siteConfig } from '../../site.config.mjs';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Updates & Release' },
+];
+
+const guide = enabledGuides.find((g) => g.slug === 'updates')!;
+---
+
+<BaseLayout
+  title={guide.title}
+  description={guide.description}
+  path="/updates/"
+  crumbs={crumbs}
+>
+  <Breadcrumbs items={crumbs} />
+
+  <header class="hero">
+    <div class="shell copy">
+      <span class="eyebrow">Updates & Release</span>
+      <h1>Pass the Fear Updates & Release</h1>
+      <p>{guide.playerTask}</p>
+      <div class="meta-row">
+        <span>Last checked: {siteConfig.lastUpdated}</span>
+        <span>Unofficial guide</span>
+      </div>
+    </div>
+  </header>
+
+  <article class="shell copy section">
+    <!-- Quick Answer -->
+    <QuickAnswer
+      answer={guide.quickAnswer}
+      lastUpdated={siteConfig.lastUpdated}
+      sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
+    />
+
+    <!-- Player task intro -->
+    <section class="section" aria-labelledby="player-task-title">
+      <h2 id="player-task-title">What this page covers</h2>
+      <p>{guide.playerTask}</p>
+    </section>
+
+    <!-- Release-date conflict card — direct source links -->
+    <section class="section" aria-labelledby="conflict-title">
+      <h2 id="conflict-title">Release-Date Conflict — check both sources</h2>
+      <p>Two official Steam surfaces currently disagree on the launch date. Both are first-party. Do not assume one is correct without verifying directly.</p>
+      <div class="conflict-row">
+        <div class="conflict-source">
+          <strong>Steam Store listing</strong>
+          <span>Observed: 2026-07-20</span>
+          <a href="https://store.steampowered.com/app/3561220/Pass_the_Fear/" target="_blank" rel="nofollow">store.steampowered.com</a>
+          <span class="muted">Shows July 22, 2026</span>
+        </div>
+        <div class="conflict-source">
+          <strong>Official Steam Community announcement</strong>
+          <span>Published: June 14, 2026</span>
+          <a href="https://steamcommunity.com/app/3561220" target="_blank" rel="nofollow">steamcommunity.com/app/3561220</a>
+          <span class="muted">Says July 23, 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Official Update Timeline -->
+    <section class="section" aria-labelledby="timeline-title">
+      <h2 id="timeline-title">Official Update Timeline</h2>
+      <UpdateTimeline items={updates} />
+      <p class="muted" style="margin-top: 1rem; font-size: 0.88rem;">
+        Sources: PTF-S01 (Steam store) and PTF-S02 (Steam Community hub). Both are official first-party surfaces. Verify directly on Steam for the authoritative current listing.
+      </p>
+    </section>
+
+    <!-- Confirmed / Not Confirmed -->
+    <section class="grid section" aria-label="Evidence boundaries">
+      <ConfirmedFacts items={guide.confirmed} />
+      <NotConfirmed items={guide.notConfirmed} />
+    </section>
+
+    <!-- Player questions (3-6 H2s) -->
+    <section class="section" aria-labelledby="player-questions-title">
+      <h2 id="player-questions-title">Common player questions about release</h2>
+
+      <details>
+        <summary>Which date should I use for my calendar?</summary>
+        <p>Check both the Steam store page and the Steam Community hub directly. The conflict has not been resolved as of the last check on 2026-07-20. Do not commit to one date until you have verified the current listing.</p>
+      </details>
+
+      <details>
+        <summary>Is the demo still available?</summary>
+        <p>The official announcement said the demo was scheduled to go offline on June 21, 2026. Current live demo availability requires a fresh official check and is not confirmed.</p>
+      </details>
+
+      <details>
+        <summary>What changed from the demo to full release?</summary>
+        <p>The official announcement confirms: stages, chapters, bosses, difficulties, Pearls, Relics, a revamped Forge, Weapons and Weapon Parts are added in the full release beyond what the demo offered.</p>
+      </details>
+
+      <details>
+        <summary>Will there be post-launch updates?</summary>
+        <p>This guide hub tracks official announcements. After launch, the Updates page will reflect new official patches and announcements as they are published.</p>
+      </details>
+
+      <details>
+        <summary>Where can I get the official announcement?</summary>
+        <p>The official Steam Community hub for Pass the Fear (app 3561220) is at <a href="https://steamcommunity.com/app/3561220" target="_blank" rel="nofollow">steamcommunity.com/app/3561220</a>. The June 14 launch announcement is published there.</p>
+      </details>
+    </section>
+
+    <!-- Checklist -->
+    <section class="section" aria-labelledby="checklist-title">
+      <h2 id="checklist-title">Pre-launch verification checklist</h2>
+      <ul class="checklist">
+        <li>Check the current Steam store listing directly at <a href="https://store.steampowered.com/app/3561220/Pass_the_Fear/" target="_blank" rel="nofollow">store.steampowered.com</a></li>
+        <li>Check the official Steam Community hub at <a href="https://steamcommunity.com/app/3561220" target="_blank" rel="nofollow">steamcommunity.com/app/3561220</a></li>
+        <li>Note which date the store currently shows — it may have changed since 2026-07-20</li>
+        <li>Recheck both sources on or after July 22, 2026 to confirm the actual launch date</li>
+        <li>Subscribe to the Steam Community hub for the authoritative announcement</li>
+      </ul>
+    </section>
+
+    <!-- Related guides -->
+    <RelatedGuides slugs={guide.relatedSlugs} />
+
+    <!-- FAQ -->
+    <FaqList items={guide.faq} enableSchema={guide.faqSchemaApproved} />
+
+    <!-- Source citation with direct links -->
+    <SourceCitation
+      sourceIds={guide.sourceIds}
+      scope="All facts are traced to PTF-S01 (Steam store) and PTF-S02 (Steam Community hub). Direct source links: Steam store — https://store.steampowered.com/app/3561220/Pass_the_Fear/ | Steam Community — https://steamcommunity.com/app/3561220"
+    />
+  </article>
+</BaseLayout>
+
+<style>
+  .conflict-row {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-top: 0.75rem;
+  }
+  .conflict-source {
+    background: color-mix(in srgb, #d6a65e 10%, var(--card-color));
+    border: 1px solid #d6a65e;
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+  .conflict-source strong { display: block; margin-bottom: 0.25rem; }
+  .conflict-source a { color: var(--theme-color); }
+  .conflict-source .muted { font-size: 0.85rem; }
+  .section details {
+    border-bottom: 1px solid var(--line-color);
+    padding: 0.85rem 0;
+  }
+  .section details summary { cursor: pointer; font-weight: 750; }
+  .section details p { margin: 0.5rem 0 0; color: var(--muted-color); }
+  .table-wrap { overflow-x: auto; }
+</style>

@@ -1,0 +1,61 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import { siteConfig } from '../../site.config.mjs';
+
+interface Crumb { label: string; href?: string; }
+interface Props { title: string; description: string; path: string; crumbs?: Crumb[]; }
+const { title, description, path, crumbs = [] } = Astro.props;
+const canonical = new URL(path, siteConfig.siteUrl).toString();
+const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+const robots = siteConfig.noIndex || siteConfig.templateMode ? 'noindex, nofollow' : 'index, follow';
+const cssVars = `--theme-color:${siteConfig.theme.themeColor};--background-color:${siteConfig.theme.backgroundColor};--card-color:${siteConfig.theme.cardColor};--text-color:${siteConfig.theme.textColor};--accent-color:${siteConfig.theme.accentColor}`;
+const webPageSchema = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: fullTitle,
+  description,
+  url: canonical,
+  isPartOf: { '@type': 'WebSite', name: siteConfig.name, url: siteConfig.siteUrl },
+}).replace(/</g, '\\u003c');
+const breadcrumbSchema = crumbs.length > 0 ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: crumbs.map((crumb, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: crumb.label,
+    item: crumb.href ? new URL(crumb.href, siteConfig.siteUrl).toString() : canonical,
+  })),
+}).replace(/</g, '\\u003c') : '';
+---
+
+<!doctype html>
+<html lang={siteConfig.language} style={cssVars}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content={siteConfig.theme.backgroundColor} />
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <title>{fullTitle}</title>
+    <script is:inline type="application/ld+json" set:html={webPageSchema} />
+    {breadcrumbSchema && <script is:inline type="application/ld+json" set:html={breadcrumbSchema} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <Header />
+    <main id="main-content"><slot /></main>
+    <Footer />
+  </body>
+</html>

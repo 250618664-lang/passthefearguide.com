@@ -1,0 +1,11 @@
+---
+interface Props { items: string[]; }
+const { items } = Astro.props;
+// Prefix each item with "Not confirmed — " so the denial marker is always present
+const prefixedItems = items.map((item) => `Not confirmed — ${item}`);
+---
+<section class="card not-confirmed" aria-labelledby="not-confirmed-title">
+  <span class="eyebrow">Not Confirmed</span>
+  <h2 id="not-confirmed-title">What needs more evidence</h2>
+  <ul>{prefixedItems.map((item) => <li set:html={item} />)}</ul>
+</section>

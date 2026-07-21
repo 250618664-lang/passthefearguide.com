@@ -1,0 +1,24 @@
+---
+import type { FaqItem } from '../types';
+interface Props { items: FaqItem[]; enableSchema?: boolean; }
+const { items, enableSchema = false } = Astro.props;
+const schema = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+}).replace(/</g, '\\u003c');
+---
+<section class="faq" aria-labelledby="faq-title">
+  <h2 id="faq-title">Frequently Asked Questions</h2>
+  {items.map((item) => (
+    <details>
+      <summary>{item.question}</summary>
+      <p>{item.answer}</p>
+    </details>
+  ))}
+</section>
+{enableSchema && <script is:inline type="application/ld+json" set:html={schema} />}

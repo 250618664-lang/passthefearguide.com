@@ -1,0 +1,19 @@
+---
+import { enabledGuides } from '../data/guides';
+import { siteConfig } from '../../site.config.mjs';
+
+const primary = enabledGuides.filter((guide) =>
+  ['guide', 'beginner-guide', 'build-system', 'weapons', 'bosses-stages', 'co-op'].includes(guide.slug)
+);
+---
+
+<header class="site-header">
+  <div class="shell nav">
+    <a class="brand" href="/">{siteConfig.name}</a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      {primary.map((guide) => (
+        <a href={`/${guide.slug}/`}>{guide.navLabel}</a>
+      ))}
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,249 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import QuickAnswer from '../components/QuickAnswer.astro';
+import SourceCitation from '../components/SourceCitation.astro';
+import { enabledGuides } from '../data/guides';
+import { siteConfig } from '../../site.config.mjs';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Complete Guide' },
+];
+
+// The eight guide/support task routes (excluding trust pages)
+const taskRoutes = enabledGuides.filter((guide) =>
+  ['guide', 'start', 'database', 'progression', 'combat', 'updates'].includes(guide.cluster) &&
+  guide.slug !== 'guide'
+);
+
+const guide = enabledGuides.find((g) => g.slug === 'guide')!;
+---
+
+<BaseLayout
+  title={guide.title}
+  description={guide.description}
+  path="/guide/"
+  crumbs={crumbs}
+>
+  <Breadcrumbs items={crumbs} />
+
+  <header class="hero">
+    <div class="shell copy">
+      <span class="eyebrow">Complete Guide</span>
+      <h1>Pass the Fear Complete Guide</h1>
+      <p>{guide.playerTask}</p>
+      <div class="meta-row">
+        <span>Last checked: {siteConfig.lastUpdated}</span>
+        <span>Unofficial guide</span>
+      </div>
+    </div>
+  </header>
+
+  <article class="shell copy section">
+    <!-- Quick Answer -->
+    <QuickAnswer
+      answer={guide.quickAnswer}
+      lastUpdated={siteConfig.lastUpdated}
+      sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
+    />
+
+    <!-- Task Matrix — 8 confirmed player tasks -->
+    <section class="section" aria-labelledby="task-matrix-title">
+      <h2 id="task-matrix-title">What do you want to do?</h2>
+      <p>Choose a task below to jump to the right guide. Every page shows its evidence status and what is confirmed vs. still needs launch verification.</p>
+
+      <div class="task-matrix">
+        {taskRoutes.map((t) => (
+          <a class="task-card" href={`/${t.slug}/`}>
+            <div class="task-card-header">
+              <span class="badge">{t.cluster}</span>
+              <span class="task-status-badge">{t.confirmed.length} confirmed · {t.notConfirmed.length} not confirmed</span>
+            </div>
+            <h3>{t.navLabel}</h3>
+            <p class="muted">{t.playerTask}</p>
+            <div class="task-quick-facts">
+              {t.confirmed.slice(0, 2).map((fact) => (
+                <span class="fact-chip confirmed-chip">✓ {fact.substring(0, 60)}{fact.length > 60 ? '…' : ''}</span>
+              ))}
+              {t.notConfirmed.slice(0, 1).map((fact) => (
+                <span class="fact-chip unconfirmed-chip">✗ {fact.substring(0, 50)}{fact.length > 50 ? '…' : ''}</span>
+              ))}
+            </div>
+            <span class="task-link-hint">Open guide →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Verification-status legend -->
+    <section class="section" aria-labelledby="evidence-legend-title">
+      <h2 id="evidence-legend-title">Evidence status explained</h2>
+      <div class="legend-grid">
+        <div class="legend-item">
+          <span class="badge confirmed-chip">✓ Confirmed</span>
+          <p>Facts traced to PTF-S01 (Steam store) or PTF-S02 (Steam Community announcement). You can rely on these before launch.</p>
+        </div>
+        <div class="legend-item">
+          <span class="badge unconfirmed-chip">✗ Not Confirmed</span>
+          <p>Facts not yet verified in official sources. Do not rely on these for gameplay decisions until launch-day verification.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Evidence-status table -->
+    <section class="section" aria-labelledby="all-facts-title">
+      <h2 id="all-facts-title">All confirmed and unconfirmed facts across this guide hub</h2>
+      <div class="table-wrap">
+        <table>
+          <caption>Pass the Fear — evidence registry per guide page</caption>
+          <thead>
+            <tr>
+              <th scope="col">Guide page</th>
+              <th scope="col">Confirmed fact</th>
+              <th scope="col">Evidence state</th>
+            </tr>
+          </thead>
+          <tbody>
+            {taskRoutes.flatMap((t) =>
+              t.confirmed.map((fact) => (
+                <tr>
+                  <td><a href={`/${t.slug}/`}>{t.navLabel}</a></td>
+                  <td>{fact}</td>
+                  <td><span class="badge confirmed-chip">Confirmed</span></td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3-6 Player-question H2s -->
+    <section class="section" aria-labelledby="player-questions-title">
+      <h2 id="player-questions-title">Common player questions</h2>
+
+      <details>
+        <summary>Is Pass the Fear the same as Halloween Horror Nights "Frequent Fear Pass"?</summary>
+        <p>No. Pass the Fear (Steam app 3561220) is a roguelite bullet-hell shooter by PlayMud Studio. Halloween Horror Nights is a Universal Studios theme park event. Google Trends related queries for this game are substantially polluted by Frequent Fear Pass searches.</p>
+      </details>
+
+      <details>
+        <summary>When does Pass the Fear launch?</summary>
+        <p>Two official sources currently disagree. The Steam store listing (observed 2026-07-20) shows July 22, 2026. The official Steam Community announcement (June 14) says July 23, 2026. Both dates are shown on the Updates page with source links. Do not assume one is correct — verify directly on Steam.</p>
+      </details>
+
+      <details>
+        <summary>Is there a demo?</summary>
+        <p>The official announcement said the demo was scheduled to go offline on June 21, 2026. Current live demo availability requires a fresh official check and is shown on the Updates page.</p>
+      </details>
+
+      <details>
+        <summary>Can I play co-op?</summary>
+        <p>Yes. The Steam store feature list confirms both single-player and online co-op. Exact lobby workflow and player-count limits require launch-day verification.</p>
+      </details>
+
+      <details>
+        <summary>Are gameplay facts like damage values published on this site?</summary>
+        <p>No. No damage numbers, drop rates, boss mechanics, or hidden stats are published on this site. Those facts require launch-day hands-on verification and will be added after that check.</p>
+      </details>
+
+      <details>
+        <summary>How often is this guide updated?</summary>
+        <p>Each page shows a "Last checked" date. The Updates page tracks official announcements. New facts are added after a relevant official source is rechecked.</p>
+      </details>
+    </section>
+
+    <!-- Source citation -->
+    <SourceCitation
+      sourceIds={['PTF-S01', 'PTF-S02']}
+      scope="All facts are traced to PTF-S01 (Steam store) and PTF-S02 (Steam Community hub). No private research files, screenshots, or third-party sources are published."
+    />
+  </article>
+</BaseLayout>
+
+<style>
+  .task-matrix {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    margin-top: 1.25rem;
+  }
+  .task-card {
+    background: var(--card-color);
+    border: 1px solid var(--line-color);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .task-card:hover {
+    border-color: var(--theme-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  .task-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .task-card h3 { margin: 0; font-size: 1.05rem; }
+  .task-card p { margin: 0; font-size: 0.88rem; }
+  .task-quick-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+    overflow: hidden;
+  }
+  .fact-chip {
+    font-size: 0.78rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    white-space: normal;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  .confirmed-chip {
+    background: color-mix(in srgb, var(--accent-color) 15%, transparent);
+    color: var(--accent-color);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 40%, transparent);
+  }
+  .unconfirmed-chip {
+    background: color-mix(in srgb, #d6a65e 15%, transparent);
+    color: #d6a65e;
+    border: 1px solid color-mix(in srgb, #d6a65e 40%, transparent);
+  }
+  .task-status-badge {
+    font-size: 0.78rem;
+    color: var(--muted-color);
+  }
+  .task-link-hint {
+    font-size: 0.82rem;
+    color: var(--theme-color);
+    font-weight: 700;
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+  .legend-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-top: 0.75rem;
+  }
+  .legend-item { display: flex; flex-direction: column; gap: 0.4rem; }
+  .legend-item p { margin: 0; font-size: 0.9rem; }
+  .table-wrap { overflow-x: auto; max-width: 100%; }
+  .table-wrap table { min-width: 0; width: 100%; box-sizing: border-box; }
+  .section details {
+    border-bottom: 1px solid var(--line-color);
+    padding: 0.85rem 0;
+  }
+  .section details summary { cursor: pointer; font-weight: 750; }
+  .section details p { margin: 0.5rem 0 0; color: var(--muted-color); }
+</style>

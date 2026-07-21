@@ -1,0 +1,16 @@
+---
+interface Props { answer: string; lastUpdated?: string; sourceScope?: string; }
+const { answer, lastUpdated, sourceScope } = Astro.props;
+---
+<section class="card answer" aria-labelledby="quick-answer-title">
+  <span class="eyebrow">Quick Answer</span>
+  <h2 id="quick-answer-title">The answer first</h2>
+  <p>{answer}</p>
+  {(lastUpdated || sourceScope) && (
+    <p class="muted">
+      {lastUpdated && `Last checked: ${lastUpdated}`}
+      {lastUpdated && sourceScope && ' · '}
+      {sourceScope}
+    </p>
+  )}
+</section>

@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QuickAnswer from '../components/QuickAnswer.astro';
+import UpdateTimeline from '../components/UpdateTimeline.astro';
+import SourceCitation from '../components/SourceCitation.astro';
+import { enabledGuides } from '../data/guides';
+import { updates } from '../data/updates';
+import { siteConfig } from '../../site.config.mjs';
+
+const popular = enabledGuides.filter((guide) => guide.popular);
+const hubEntries = enabledGuides.filter((guide) => !['trust'].includes(guide.cluster));
+---
+
+<BaseLayout
+  title={siteConfig.name}
+  description={siteConfig.description}
+  path="/"
+>
+  <!-- Hero — compact, Picker-first layout -->
+  <section class="hero hero--compact">
+    <div class="shell copy">
+      <span class="eyebrow">Unofficial Game Guide</span>
+      <h1>Pass the Fear Guide Hub</h1>
+      <p>An unofficial, evidence-bounded guide for the Steam roguelite bullet-hell shooter by PlayMud Studio / Paras Games.</p>
+      <div class="meta-row">
+        <span>Last checked: {siteConfig.lastUpdated}</span>
+        <span>Steam app 3561220</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guide Path Picker — first viewport tool -->
+  <div class="shell copy section">
+    <div class="picker-wrap" id="guide-picker">
+      <span class="eyebrow">First Player Tool</span>
+      <h2 id="picker-heading">Guide Path Picker</h2>
+      <p>Choose your current task. The picker shows the matching canonical guide and its evidence status.</p>
+      <div class="picker-grid" role="group" aria-labelledby="picker-heading">
+        <button class="picker-btn" data-task="start">Start</button>
+        <button class="picker-btn" data-task="characters">Characters</button>
+        <button class="picker-btn" data-task="builds">Builds</button>
+        <button class="picker-btn" data-task="weapons">Weapons</button>
+        <button class="picker-btn" data-task="bosses">Bosses/Stages</button>
+        <button class="picker-btn" data-task="coop">Co-op</button>
+        <button class="picker-btn" data-task="release">Release status</button>
+      </div>
+      <div class="picker-result" id="picker-result" aria-live="polite">
+        <p class="muted" style="margin:0">Select a task above to see its guide link and evidence label.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Answer -->
+  <div class="shell copy section">
+    <QuickAnswer
+      answer={`This guide hub maps verified Pass the Fear facts to the right player task. Everything published here is traced to an official source or marked with an evidence boundary. Use the Guide Path Picker above or browse the task matrix to find what you need.`}
+      lastUpdated={siteConfig.lastUpdated}
+      sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
+    />
+  </div>
+
+  <!-- Task matrix -->
+  <section class="shell section" aria-labelledby="hub-title">
+    <span class="eyebrow">Complete Guide</span>
+    <h2 id="hub-title">Browse by player task</h2>
+    <div class="grid">
+      {hubEntries.map((guide) => (
+        <a class="card" href={`/${guide.slug}/`}>
+          <span class="badge">{guide.cluster}</span>
+          <h3>{guide.navLabel}</h3>
+          <p class="muted">{guide.playerTask}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Release-date conflict card (below fold) -->
+  <div class="shell copy section">
+    <div class="conflict-card">
+      <span class="eyebrow">Release-Date Conflict</span>
+      <h2>Two official sources give different dates</h2>
+      <p>Both are first-party Steam surfaces. Check both before planning your download.</p>
+      <div class="conflict-row">
+        <div class="conflict-source">
+          <strong>Steam Store listing</strong>
+          <span>Observed: 2026-07-20</span>
+          <a href="https://store.steampowered.com/app/3561220/Pass_the_Fear/" target="_blank" rel="nofollow">store.steampowered.com</a>
+          <span class="muted">Shows July 22, 2026</span>
+        </div>
+        <div class="conflict-source">
+          <strong>Official Steam Community announcement</strong>
+          <span>Published: June 14, 2026</span>
+          <a href="https://steamcommunity.com/app/3561220" target="_blank" rel="nofollow">steamcommunity.com/app/3561220</a>
+          <span class="muted">Says July 23, 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular guides -->
+  <section class="shell section" aria-labelledby="popular-title">
+    <span class="eyebrow">Popular Guides</span>
+    <h2 id="popular-title">Start with these</h2>
+    <div class="grid">
+      {popular.map((guide) => (
+        <a class="card" href={`/${guide.slug}/`}>
+          <h3>{guide.navLabel}</h3>
+          <p class="muted">{guide.playerTask}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Latest updates -->
+  <div class="shell section">
+    <UpdateTimeline items={updates} />
+  </div>
+
+  <!-- Sources -->
+  <div class="shell copy section">
+    <SourceCitation
+      sourceIds={['PTF-S01', 'PTF-S02']}
+      scope="All facts on this hub are traced to official Steam store (PTF-S01) and Steam Community hub (PTF-S02). No private research files, screenshots, or third-party sources are published."
+    />
+  </div>
+
+  <!-- Disambiguation notice (below fold) -->
+  <div class="shell copy section">
+    <div class="disambig-note">
+      <strong>Not sure you have the right game?</strong> This guide is for <em>Pass the Fear</em> — a roguelite bullet-hell shooter on Steam. If you were looking for Halloween Horror Nights "Frequent Fear Pass," that is a Universal theme park event and uses a different search.
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initPicker } from '../scripts/picker';
+  initPicker();
+</script>
+
+<style>
+  .hero--compact {
+    padding-block: clamp(1.5rem, 5vw, 3rem);
+  }
+  .hero--compact h1 {
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    margin: 0.25rem 0 0.75rem;
+  }
+  .disambig-note {
+    margin-top: 0;
+    padding: 0.85rem 1rem;
+    background: color-mix(in srgb, var(--theme-color) 10%, transparent);
+    border: 1px solid var(--theme-color);
+    border-radius: 9px;
+    font-size: 0.9rem;
+    max-width: 68ch;
+  }
+  .disambig-note strong { color: var(--theme-color); }
+</style>

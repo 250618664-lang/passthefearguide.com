@@ -1,0 +1,139 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import QuickAnswer from '../components/QuickAnswer.astro';
+import ConfirmedFacts from '../components/ConfirmedFacts.astro';
+import NotConfirmed from '../components/NotConfirmed.astro';
+import Checklist from '../components/Checklist.astro';
+import DataTable from '../components/DataTable.astro';
+import Comparison from '../components/Comparison.astro';
+import FaqList from '../components/FaqList.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import SourceCitation from '../components/SourceCitation.astro';
+import { enabledGuides } from '../data/guides';
+import { siteConfig } from '../../site.config.mjs';
+import type { GuidePage } from '../types';
+
+export const getStaticPaths = (() =>
+  enabledGuides
+    .filter((guide) => !['guide', 'updates'].includes(guide.slug)) // guide.astro and updates.astro are dedicated static pages
+    .map((guide) => ({ params: { slug: guide.slug }, props: { guide } }))
+) satisfies GetStaticPaths;
+
+interface Props { guide: GuidePage; }
+const { guide } = Astro.props;
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: guide.navLabel },
+];
+
+// Build structured data table rows from the guide's confirmed/notConfirmed
+const sourceLabel = guide.sourceIds.length > 0
+  ? `Confirmed — ${guide.sourceIds.join(', ')}`
+  : 'Confirmed';
+const tableRows = guide.confirmed.map((item) => [item, sourceLabel]);
+const notConfirmedRows = guide.notConfirmed.map((item) => [`Not confirmed — ${item}`, 'Not Confirmed — requires launch verification']);
+const allRows = [...tableRows, ...notConfirmedRows];
+---
+
+<BaseLayout
+  title={guide.title}
+  description={guide.description}
+  path={`/${guide.slug}/`}
+  crumbs={crumbs}
+>
+  <Breadcrumbs items={crumbs} />
+
+  <header class="hero">
+    <div class="shell copy">
+      <span class="eyebrow">{guide.cluster} guide</span>
+      <h1>{guide.title}</h1>
+      <p>{guide.playerTask}</p>
+      <div class="meta-row">
+        <span>Last checked: {siteConfig.lastUpdated}</span>
+        <span>Unofficial guide</span>
+      </div>
+    </div>
+  </header>
+
+  <article class="shell copy section">
+    <!-- Quick Answer -->
+    <QuickAnswer
+      answer={guide.quickAnswer}
+      lastUpdated={siteConfig.lastUpdated}
+      sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
+    />
+
+    <!-- Player task intro -->
+    <section class="section" aria-labelledby="player-task-title">
+      <h2 id="player-task-title">What this page covers</h2>
+      <p>{guide.playerTask}</p>
+    </section>
+
+    <!-- Checklist -->
+    <Checklist title={`${guide.navLabel} action checklist`} items={guide.checklist} />
+
+    <!-- Structured table of confirmed vs not confirmed facts -->
+    {allRows.length > 0 && (
+      <section class="section" aria-labelledby="table-title">
+        <h2 id="table-title">Evidence status at a glance</h2>
+        <DataTable
+          caption={`${guide.navLabel} — confirmed vs not confirmed`}
+          headers={['Claim', 'Evidence state']}
+          rows={allRows}
+        />
+      </section>
+    )}
+
+    <!-- Confirmed / Not Confirmed panels -->
+    <section class="grid section" aria-label="Evidence boundaries">
+      <ConfirmedFacts items={guide.confirmed} />
+      <NotConfirmed items={guide.notConfirmed} />
+    </section>
+
+    <!-- Decision help -->
+    <Comparison
+      title="Player decision help"
+      items={[
+        {
+          label: 'Use this page now',
+          bestFor: guide.playerTask,
+          evidence: `All confirmed facts on this page are traced to ${guide.sourceIds.join(' or ')}.`,
+        },
+        {
+          label: 'Wait for an update',
+          bestFor: 'Facts marked Not Confirmed still need official or hands-on verification.',
+          evidence: 'Do not rely on Not Confirmed claims for gameplay decisions.',
+        },
+      ]}
+    />
+
+    <!-- Player-question H2 sections (3–6 per core page) -->
+    {guide.playerQuestions.length > 0 && (
+      <section class="section" aria-labelledby="player-questions-title">
+        <h2 id="player-questions-title">Common player questions</h2>
+        {guide.playerQuestions.map((pq) => (
+          <details>
+            <summary>{pq.q}</summary>
+            <p>{pq.a}</p>
+          </details>
+        ))}
+      </section>
+    )}
+
+    <!-- Related guides -->
+    <RelatedGuides slugs={guide.relatedSlugs} />
+
+    <!-- FAQ -->
+    <FaqList items={guide.faq} enableSchema={guide.faqSchemaApproved} />
+
+    <!-- Source citation -->
+    <SourceCitation
+      sourceIds={guide.sourceIds}
+      scope={guide.sourceIds.length > 0
+        ? `All facts are traced to ${guide.sourceIds.join(' (Steam store) and ')} (Steam Community hub). No private research files, screenshots, or third-party sources are published.`
+        : 'No private research files, screenshots, or third-party sources are published.'}
+    />
+  </article>
+</BaseLayout>

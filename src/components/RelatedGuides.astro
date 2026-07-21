@@ -1,0 +1,17 @@
+---
+import { guideBySlug } from '../data/guides';
+interface Props { slugs: string[]; }
+const { slugs } = Astro.props;
+const guides = slugs.map((slug) => guideBySlug.get(slug)).filter((guide) => guide !== undefined);
+---
+<section aria-labelledby="related-title">
+  <h2 id="related-title">Related Guides</h2>
+  <div class="grid">
+    {guides.map((guide) => (
+      <a class="card" href={`/${guide.slug}/`}>
+        <strong>{guide.navLabel}</strong><br />
+        <span class="muted">{guide.playerTask}</span>
+      </a>
+    ))}
+  </div>
+</section>

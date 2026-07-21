@@ -1,0 +1,17 @@
+---
+interface ComparisonItem { label: string; bestFor: string; evidence: string; }
+interface Props { title: string; items: ComparisonItem[]; }
+const { title, items } = Astro.props;
+---
+<section aria-labelledby="comparison-title">
+  <h2 id="comparison-title">{title}</h2>
+  <div class="grid">
+    {items.map((item) => (
+      <article class="card">
+        <h3>{item.label}</h3>
+        <p><strong>Best for:</strong> {item.bestFor}</p>
+        <p class="muted"><strong>Evidence:</strong> {item.evidence}</p>
+      </article>
+    ))}
+  </div>
+</section>
