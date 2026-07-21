@@ -516,7 +516,7 @@ export const guidePages: GuidePage[] = [
     'This guide does not collect personal data, operate accounts, or run first-party analytics. Selected content pages display one third-party Native Banner advertisement. The ad service may process browser, device, network/IP, cookie, and ad-interaction information for ad delivery, measurement, and fraud prevention. Trust pages (Sources, About, Privacy) and the 404 page do not display advertisements.',
     [
       'No accounts, login, or user registration.',
-      'No first-party analytics, tracking scripts, or third-party telemetry.',
+      'This site does not operate first-party analytics or first-party tracking.',
       'Content pages (home, guide, beginner-guide, characters, build-system, weapons, bosses-stages, co-op, updates) display one third-party Native Banner.',
       'Trust pages (Sources, About, Privacy) and 404 page display no advertisements.',
       'The third-party ad service may process browser, device, network/IP, cookie and ad-interaction data for ad delivery and measurement.',

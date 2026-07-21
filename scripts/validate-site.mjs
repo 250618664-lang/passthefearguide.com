@@ -111,6 +111,7 @@ const PROHIBITED_PRIVACY_PHRASES = [
   { pattern: /No analytics, tracking scripts, or third-party telemetry\./i, reason: 'conflicts with third-party ad disclosure' },
   { pattern: /No cookies beyond standard browser cache\./i, reason: 'conflicts with third-party ad cookie use' },
   { pattern: /No third-party advertisements\./i, reason: 'conflicts with active third-party native ad' },
+  { pattern: /No first-party analytics, tracking scripts, or third-party telemetry\./i, reason: 'ambiguous — replaced with clear first-party boundary' },
 ];
 
 function scanFilePatterns(filePath, content) {
