@@ -77,13 +77,19 @@ const FORBIDDEN_CLAIM_PATTERNS = [
 ];
 
 const AD_ANALYTICS_PATTERNS = [
-  { pattern: /effectivecpmnetwork|invoke\.js|adsterra|adsense|googletagmanager/i, reason: 'ad script reference' },
-  { pattern: /google-analytics\.com|analytics\.js|tracking\.js/i, reason: 'analytics script reference' },
+  // Only flag these if they appear WITHOUT being the approved native-banner loader/container
+  { pattern: /adsterra\.com|adsense|googletagmanager|google-analytics\.com|analytics\.js|tracking\.js/i, reason: 'prohibited ad/analytics network' },
   { pattern: /dataLayer.*push|gtag\(|fbq\(.*track/i, reason: 'analytics data layer' },
+  { pattern: /amazon-adsystem\.com|criteo\.com|outbrain\.com|taboola\.com|mgid\.com/i, reason: 'other known ad network' },
 ];
 
+// Approved Native Banner loader and container — these bypass the external-script block
+const APPROVED_AD_LOADER = 'https://pl30459301.effectivecpmnetwork.com/4499ca96010bfd0d82e881acb7d864fe/invoke.js';
+const APPROVED_AD_CONTAINER = 'container-4499ca96010bfd0d82e881acb7d864fe';
+const APPROVED_AD_DOMAIN = 'pl30459301.effectivecpmnetwork.com';
+
 const EXTERNAL_RESOURCE_PATTERNS = [
-  { pattern: /<script[^>]+src=["']https?:\/\/(?!(?:passthefearguide\.com|localhost|_assets))/, reason: 'external script tag' },
+  { pattern: /<script[^>]+src=["']https?:\/\/(?!(?:passthefearguide\.com|localhost|_assets|pl30459301\.effectivecpmnetwork\.com))/, reason: 'external script tag' },
   { pattern: /<link[^>]+rel=["']stylesheet["'][^>]+href=["']https?:\/\/(?!(?:passthefearguide\.com|localhost|_assets))/, reason: 'external stylesheet link' },
   { pattern: /<img[^>]+src=["']https?:\/\/(?!(?:passthefearguide\.com|localhost|_assets))/, reason: 'external image' },
 ];
@@ -367,6 +373,78 @@ async function runMutationTests() {
     }
   }
 
+  // MT6: duplicate ad loader — inject a second approved loader into home page
+  {
+    const original = fs.readFileSync(homePath, 'utf-8');
+    const approvedLoader = 'https://pl30459301.effectivecpmnetwork.com/4499ca96010bfd0d82e881acb7d864fe/invoke.js';
+    // If no existing loader, skip
+    if (!original.includes(approvedLoader)) {
+      results.push({ label: 'MT6: duplicate ad loader', passed: false, issue: 'SKIP: no existing loader found' });
+    } else {
+      // Add a second loader
+      const mutated = original.replace(
+        approvedLoader,
+        approvedLoader + '"></script><script async="async" data-cfasync="false" src="' + approvedLoader
+      );
+      fs.writeFileSync(homePath, mutated);
+      const { loaders, containers } = countAdSlots(mutated);
+      const detected = loaders !== 1; // should be 2 after mutation → detected as wrong
+      results.push({
+        label: 'MT6: duplicate ad loader (2 loaders should be caught)',
+        passed: detected,
+        issue: detected ? 'CORRECTLY FAILED' : `MISSED: loaders=${loaders} containers=${containers}`,
+      });
+      fs.writeFileSync(homePath, original);
+    }
+  }
+
+  // MT7: wrong ad loader domain — replace approved loader with wrong domain
+  {
+    const original = fs.readFileSync(homePath, 'utf-8');
+    const approvedLoader = 'https://pl30459301.effectivecpmnetwork.com/4499ca96010bfd0d82e881acb7d864fe/invoke.js';
+    if (!original.includes(approvedLoader)) {
+      results.push({ label: 'MT7: wrong ad loader domain', passed: false, issue: 'SKIP: no existing loader found' });
+    } else {
+      const wrongLoader = 'https://evil-cpmnetwork.com/evil/invoke.js';
+      const mutated = original.replace(approvedLoader, wrongLoader);
+      fs.writeFileSync(homePath, mutated);
+      // The wrong domain should be caught by EXTERNAL_RESOURCE pattern
+      const { allIssues: issues } = scanDist(DIST);
+      const found = issues.some((i) => i.includes('EXTERNAL_RESOURCE') || i.includes('external script'));
+      results.push({
+        label: 'MT7: wrong ad loader domain (unapproved domain should be caught)',
+        passed: found,
+        issue: found ? 'CORRECTLY FAILED' : `MISSED: wrong loader not caught`,
+      });
+      fs.writeFileSync(homePath, original);
+    }
+  }
+
+  // MT8: wrong ad container ID
+  {
+    const original = fs.readFileSync(homePath, 'utf-8');
+    const approvedContainer = 'container-4499ca96010bfd0d82e881acb7d864fe';
+    if (!original.includes(approvedContainer)) {
+      results.push({ label: 'MT8: wrong ad container ID', passed: false, issue: 'SKIP: no existing container found' });
+    } else {
+      const wrongContainer = 'container-evil1234567890abcdef';
+      const mutated = original.replace(approvedContainer, wrongContainer);
+      fs.writeFileSync(homePath, mutated);
+      // The wrong container ID by itself doesn't trigger a pattern unless combined with wrong loader
+      // MT8 checks that the wrong container alone doesn't get flagged as an external script (it's just an ID)
+      // The real guard is MT7 for wrong loader domain
+      // Here we just verify it doesn't silently pass with wrong container
+      const { loaders, containers } = countAdSlots(mutated);
+      const detected = containers !== 1; // wrong container ID → count mismatch
+      results.push({
+        label: 'MT8: wrong ad container ID (mismatched container ID should be detected)',
+        passed: detected,
+        issue: detected ? 'CORRECTLY FAILED' : `MISSED: containers=${containers}`,
+      });
+      fs.writeFileSync(homePath, original);
+    }
+  }
+
   return results;
 }
 
@@ -570,6 +648,55 @@ for (const route of ENABLED_ROUTES) {
 }
 if (canonicalIssues === 0) {
   console.log(`    PASS: all ${ENABLED_ROUTES.length} routes have correct canonical`);
+}
+
+// [11] Ad slot — exactly 1 loader + 1 container on 9 ad-supported pages; 0 on 4 trust pages
+console.log('[11] Ad slot count per page');
+const AD_SUPPORTED_ROUTES = [
+  '/', '/guide/', '/beginner-guide/', '/characters/', '/build-system/',
+  '/weapons/', '/bosses-stages/', '/co-op/', '/updates/',
+];
+const AD_EXCLUDED_ROUTES = ['/sources/', '/about/', '/privacy/', '/404/'];
+
+function countAdSlots(html) {
+  const loaderMatches = html.match(/pl30459301\.effectivecpmnetwork\.com\/4499ca96010bfd0d82e881acb7d864fe\/invoke\.js/g) || [];
+  const containerMatches = html.match(/container-4499ca96010bfd0d82e881acb7d864fe/g) || [];
+  return { loaders: loaderMatches.length, containers: containerMatches.length };
+}
+
+let adIssues = 0;
+for (const route of [...AD_SUPPORTED_ROUTES, ...AD_EXCLUDED_ROUTES]) {
+  const html = readRouteHtml(route);
+  if (!html) {
+    allIssues.push(`AD_CHECK: ${route} — could not read route HTML`);
+    console.log(`    SKIP: ${route} — no HTML`);
+    continue;
+  }
+  const { loaders, containers } = countAdSlots(html);
+  const isAdSupported = AD_SUPPORTED_ROUTES.includes(route);
+  if (isAdSupported) {
+    if (loaders !== 1) {
+      allIssues.push(`AD_SLOT: ${route} — ${loaders} loader(s), expected 1`);
+      console.log(`    FAIL: ${route} — ${loaders} loader(s), expected 1`);
+      adIssues++;
+    }
+    if (containers !== 1) {
+      allIssues.push(`AD_SLOT: ${route} — ${containers} container(s), expected 1`);
+      console.log(`    FAIL: ${route} — ${containers} container(s), expected 1`);
+      adIssues++;
+    }
+    if (loaders === 1 && containers === 1) {
+      console.log(`    PASS: ${route} — 1 loader + 1 container`);
+    }
+  } else {
+    if (loaders > 0 || containers > 0) {
+      allIssues.push(`AD_SLOT: ${route} — ${loaders} loader(s) + ${containers} container(s), expected 0`);
+      console.log(`    FAIL: ${route} — ${loaders} loader(s) + ${containers} container(s), expected 0`);
+      adIssues++;
+    } else {
+      console.log(`    PASS: ${route} — 0 loaders + 0 containers`);
+    }
+  }
 }
 
 // =====================

@@ -3,6 +3,7 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import QuickAnswer from '../components/QuickAnswer.astro';
+import NativeAd from '../components/NativeAd.astro';
 import ConfirmedFacts from '../components/ConfirmedFacts.astro';
 import NotConfirmed from '../components/NotConfirmed.astro';
 import Checklist from '../components/Checklist.astro';
@@ -64,6 +65,9 @@ const allRows = [...tableRows, ...notConfirmedRows];
       lastUpdated={siteConfig.lastUpdated}
       sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
     />
+
+    <!-- Native Banner — after Quick Answer, before detailed content -->
+    {guide.cluster !== 'trust' && <NativeAd />}
 
     <!-- Player task intro -->
     <section class="section" aria-labelledby="player-task-title">

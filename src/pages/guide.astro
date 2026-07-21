@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import QuickAnswer from '../components/QuickAnswer.astro';
+import NativeAd from '../components/NativeAd.astro';
 import SourceCitation from '../components/SourceCitation.astro';
 import { enabledGuides } from '../data/guides';
 import { siteConfig } from '../../site.config.mjs';
@@ -47,6 +48,9 @@ const guide = enabledGuides.find((g) => g.slug === 'guide')!;
       lastUpdated={siteConfig.lastUpdated}
       sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
     />
+
+    <!-- Native Banner — after Quick Answer, before task matrix -->
+    <NativeAd />
 
     <!-- Task Matrix — 8 confirmed player tasks -->
     <section class="section" aria-labelledby="task-matrix-title">

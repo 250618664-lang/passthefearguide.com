@@ -16,14 +16,13 @@ export const siteConfig = {
     accentColor: '#55D6BE',
   },
   ads: {
-    enabled: false,
-    provider: 'none',
+    enabled: true,
+    provider: 'native-banner',
     slots: {
-      'after-quick-answer': '',
-      'mid-content': '',
-      'content-end': '',
-      sidebar: '',
-      footer: '',
+      'native-after-answer': {
+        loaderUrl: 'https://pl30459301.effectivecpmnetwork.com/4499ca96010bfd0d82e881acb7d864fe/invoke.js',
+        containerId: 'container-4499ca96010bfd0d82e881acb7d864fe',
+      },
     },
   },
 };

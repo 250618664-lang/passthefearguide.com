@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuickAnswer from '../components/QuickAnswer.astro';
+import NativeAd from '../components/NativeAd.astro';
 import UpdateTimeline from '../components/UpdateTimeline.astro';
 import SourceCitation from '../components/SourceCitation.astro';
 import { enabledGuides } from '../data/guides';
@@ -57,6 +58,11 @@ const hubEntries = enabledGuides.filter((guide) => !['trust'].includes(guide.clu
       lastUpdated={siteConfig.lastUpdated}
       sourceScope="PTF-S01 (Steam store) and PTF-S02 (Steam Community hub)"
     />
+  </div>
+
+  <!-- Native Banner — after Quick Answer, before task matrix -->
+  <div class="shell copy">
+    <NativeAd />
   </div>
 
   <!-- Task matrix -->

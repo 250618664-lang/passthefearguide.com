@@ -1,0 +1,59 @@
+---
+// NativeAd — approved third-party Native Banner after Quick Answer
+// Slot: native-after-answer
+// Loader: https://pl30459301.effectivecpmnetwork.com/4499ca96010bfd0d82e881acb7d864fe/invoke.js
+// Container: container-4499ca96010bfd0d82e881acb7d864fe
+---
+<div
+  class="native-ad-wrapper"
+  data-ad-slot="native-after-answer"
+  aria-label="Advertisement"
+>
+  <span class="native-ad-label">Advertisement</span>
+  <div
+    id="container-4499ca96010bfd0d82e881acb7d864fe"
+    class="native-ad-container"
+  ></div>
+  <script
+    is:inline
+    async="async"
+    data-cfasync="false"
+    src="https://pl30459301.effectivecpmnetwork.com/4499ca96010bfd0d82e881acb7d864fe/invoke.js"
+  ></script>
+</div>
+
+<style>
+  .native-ad-wrapper {
+    max-width: 100%;
+    overflow: hidden;
+    width: 100%;
+    min-height: 120px;
+    margin-block: 1.5rem;
+    border: 1px solid var(--line-color);
+    border-radius: var(--radius);
+    background: var(--card-color);
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+  }
+
+  .native-ad-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .native-ad-container {
+    width: 100%;
+    min-height: 90px;
+    overflow: hidden;
+  }
+
+  /* Guard: if ad network returns empty, keep container bounded */
+  .native-ad-container:empty {
+    min-height: 90px;
+  }
+</style>
