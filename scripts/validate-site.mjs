@@ -106,6 +106,13 @@ const TEMPLATE_PLACEHOLDER_PATTERNS = [
   { pattern: /\/map\/|\/locations\/|\/quests\/|\/items\/|\/crafting\/|\/tools\//i, reason: 'route not in approved twelve' },
 ];
 
+// When ads are enabled, these phrases conflict with actual ad disclosure and must not appear
+const PROHIBITED_PRIVACY_PHRASES = [
+  { pattern: /No analytics, tracking scripts, or third-party telemetry\./i, reason: 'conflicts with third-party ad disclosure' },
+  { pattern: /No cookies beyond standard browser cache\./i, reason: 'conflicts with third-party ad cookie use' },
+  { pattern: /No third-party advertisements\./i, reason: 'conflicts with active third-party native ad' },
+];
+
 function scanFilePatterns(filePath, content) {
   const issues = [];
   const relPath = relative(ROOT, filePath);
@@ -144,6 +151,22 @@ function scanFilePatterns(filePath, content) {
   for (const { pattern, reason } of PRIVATE_PATH_PATTERNS) {
     if (pattern.test(content)) {
       issues.push(`PRIVATE_PATH: "${reason}" in ${relPath}`);
+    }
+  }
+
+  // Only check prohibited privacy phrases when ads are enabled
+  const siteConfigPath = join(ROOT, 'site.config.mjs');
+  let adsEnabled = false;
+  try {
+    const configContent = readFileSync(siteConfigPath, 'utf-8');
+    adsEnabled = /ads:\s*\{[^}]*enabled:\s*true/i.test(configContent);
+  } catch {}
+
+  if (adsEnabled) {
+    for (const { pattern, reason } of PROHIBITED_PRIVACY_PHRASES) {
+      if (pattern.test(content)) {
+        issues.push(`PRIVACY_DISCLOSURE_CONFLICT: "${reason}" in ${relPath}: "${content.match(pattern)?.[0]}"`);
+      }
     }
   }
 
