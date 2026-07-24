@@ -8,7 +8,6 @@ import { enabledGuides } from '../data/guides';
 import { updates } from '../data/updates';
 import { siteConfig } from '../../site.config.mjs';
 
-const popular = enabledGuides.filter((guide) => guide.popular);
 const hubEntries = enabledGuides.filter((guide) => !['trust'].includes(guide.cluster));
 ---
 
@@ -60,10 +59,8 @@ const hubEntries = enabledGuides.filter((guide) => !['trust'].includes(guide.clu
     />
   </div>
 
-  <!-- Native Banner — after Quick Answer, before task matrix -->
-  <div class="shell copy">
-    <NativeAd />
-  </div>
+  <!-- Native Banner — after Quick Answer, before task grid -->
+  <NativeAd />
 
   <!-- Task matrix -->
   <section class="shell section" aria-labelledby="hub-title">
@@ -103,17 +100,27 @@ const hubEntries = enabledGuides.filter((guide) => !['trust'].includes(guide.clu
     </div>
   </div>
 
-  <!-- Popular guides -->
+  <!-- Popular guides — ordered by observed GSC demand: Characters > Co-op > Build System > Guide > rest -->
   <section class="shell section" aria-labelledby="popular-title">
     <span class="eyebrow">Popular Guides</span>
     <h2 id="popular-title">Start with these</h2>
     <div class="grid">
-      {popular.map((guide) => (
-        <a class="card" href={`/${guide.slug}/`}>
-          <h3>{guide.navLabel}</h3>
-          <p class="muted">{guide.playerTask}</p>
-        </a>
-      ))}
+      <a class="card" href="/characters/">
+        <h3>Characters</h3>
+        <p class="muted">Check the officially named roster and unlock status</p>
+      </a>
+      <a class="card" href="/co-op/">
+        <h3>Co-op Guide</h3>
+        <p class="muted">Confirm solo and online co-op availability</p>
+      </a>
+      <a class="card" href="/build-system/">
+        <h3>Build System</h3>
+        <p class="muted">Understand confirmed build layers and progression</p>
+      </a>
+      <a class="card" href="/guide/">
+        <h3>Complete Guide</h3>
+        <p class="muted">Browse all guide pages and evidence status</p>
+      </a>
     </div>
   </section>
 

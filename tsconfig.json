@@ -8,5 +8,5 @@
     "allowJs": true,
     "checkJs": true
   },
-  "exclude": ["scripts"]
+  "exclude": ["scripts", "dist", "passthefearguide-public-vzrEaM"]
 }

@@ -193,7 +193,7 @@ export const guidePages: GuidePage[] = [
   p(
     'build-system', 'Build System', 'progression',
     'Understand the confirmed build layers and what still needs launch verification.',
-    'Pass the Fear build system is composed of nine confirmed layers: Weapons, Weapon Parts, Relics, Tarot Cards, elemental effects, Character Talents, Squad perks, Forge, and Pearls. Official sources confirm these systems exist and describe them as roguelite progression layers. No official source provides optimal build orders, synergy rankings, best combinations, or numerical values — those remain Not Confirmed.',
+    'Pass the Fear builds are composed of nine confirmed layers: Weapons, Weapon Parts, Relics, Tarot Cards, elemental effects, Character Talents, Squad perks, Forge, and Pearls. These are the confirmed roguelite progression systems. No official source provides optimal build orders, synergy rankings, best combinations, or numerical values — those remain Not Confirmed and will not be published here.',
     [
       'Confirmed build-layer systems: Weapons, Weapon Parts, Relics, Tarot Cards, elemental effects, Character Talents, Squad perks, Forge, Pearls.',
       'These systems are described as roguelite progression layers in official material.',
@@ -335,7 +335,7 @@ export const guidePages: GuidePage[] = [
   p(
     'co-op', 'Co-op Guide', 'combat',
     'Confirm solo and online co-op availability and what still needs a launch check.',
-    'The Steam store feature list for Pass the Fear confirms single-player and online co-op. This means the game supports both playing alone and playing with others over the internet. Exact lobby workflow, player-count limits, invite system, cross-play, and matchmaking specifics are not yet verified and require a launch-day check.',
+    'Yes — Pass the Fear supports both single-player and online co-op, confirmed by the official Steam store feature list. The game is not listed as co-op only; solo play is also available. Exact lobby workflow, player-count limits, invite system, cross-play, and matchmaking specifics require a launch-day or post-launch check.',
     [
       'Single-player is confirmed as a supported mode.',
       'Online co-op is confirmed as a supported mode.',
@@ -360,11 +360,11 @@ export const guidePages: GuidePage[] = [
       'Can I play Pass the Fear offline solo?',
       'Single-player mode is confirmed as supported. Offline operation (playing without an internet connection) is not yet verified — single-player confirms the feature exists, not that it works offline without connection.',
       'Can I play Pass the Fear with friends online?',
-      'Yes. The Steam store confirms online co-op as a supported mode. Exact lobby workflow and session limits require launch-day verification.',
+      'Yes. The Steam store confirms online co-op as a supported mode. The game is not co-op-only — solo play is also available. Exact lobby workflow and session limits require launch-day or post-launch verification.',
       'Does Pass the Fear support cross-play?',
-      'Official sources do not confirm cross-play between platforms. This requires a launch-time check.',
+      'Official sources do not confirm cross-play between platforms (PC vs. console). This requires a post-launch check and is not yet verified.',
       'How many players can join a co-op session?',
-      'Official sources confirm online co-op exists but do not specify the player-count limit. This requires a launch-day verification.',
+      'Official sources confirm online co-op exists but do not specify the player-count limit. This requires a post-launch verification.',
     ),
     [
       { q: 'What is the difference between single-player and offline?',
@@ -381,7 +381,7 @@ export const guidePages: GuidePage[] = [
   p(
     'updates', 'Updates & Release', 'updates',
     'Track official release dates, the current date conflict, and official update timeline.',
-    'Two official sources currently disagree on the Pass the Fear launch date. The Steam store listing (observed 2026-07-20) shows July 22, 2026. The official Steam Community announcement published June 14 says July 23, 2026. The demo was announced as scheduled to go offline on June 21, 2026. Current demo availability requires a fresh official check.',
+    'As last successfully checked on 2026-07-20, two official Steam surfaces listed different planned release dates: July 22 on the Steam store and July 23 in the official Steam Community announcement published June 14. Current release status, demo availability and post-launch updates require a fresh successful first-party check. This guide does not choose between the two dates.',
     [
       'Steam store listing (observed 2026-07-20): launch planned for July 22, 2026.',
       'Official Steam Community announcement (published June 14): launch planned for July 23, 2026.',
@@ -504,7 +504,7 @@ export const guidePages: GuidePage[] = [
       { q: 'How is this guide different from a wiki?',
         a: 'This guide publishes only facts traceable to official Steam sources and clearly marks anything Not Confirmed. It does not use community-reported information as primary evidence.' },
       { q: 'Does this guide have ads?',
-        a: 'Content pages display one third-party Native Banner ad. Trust pages (Sources, About, Privacy) and 404 do not display ads. No other ad formats are used.' },
+        a: 'No. This site has no active advertising. It is a static evidence-bounded reference site.' },
       { q: 'Will the guide be updated after launch?',
         a: 'Yes. Each page shows a "Last checked" date. New facts will be added after official sources are rechecked following launch or any relevant announcement.' },
     ],
@@ -513,14 +513,12 @@ export const guidePages: GuidePage[] = [
   p(
     'privacy', 'Privacy Policy', 'trust',
     'Understand the actual data and advertising practices of this guide.',
-    'This guide does not collect personal data, operate accounts, or run first-party analytics. Selected content pages display one third-party Native Banner advertisement. The ad service may process browser, device, network/IP, cookie, and ad-interaction information for ad delivery, measurement, and fraud prevention. Trust pages (Sources, About, Privacy) and the 404 page do not display advertisements.',
+    'This guide does not collect personal data, operate accounts, run analytics, or serve third-party advertisements. The site functions entirely as a static public resource. No cookies, trackers, or data-collection scripts are present. If you bookmark this site, your browser may cache pages locally, which is standard browser behavior.',
     [
       'No accounts, login, or user registration.',
-      'This site does not operate first-party analytics or first-party tracking.',
-      'Content pages (home, guide, beginner-guide, characters, build-system, weapons, bosses-stages, co-op, updates) display one third-party Native Banner.',
-      'Trust pages (Sources, About, Privacy) and 404 page display no advertisements.',
-      'The third-party ad service may process browser, device, network/IP, cookie and ad-interaction data for ad delivery and measurement.',
-      'The third-party ad service may use cookie or similar technologies as part of its ad delivery operation.',
+      'No analytics, tracking scripts, or third-party telemetry.',
+      'No third-party advertising scripts or ad network calls.',
+      'No cookies beyond standard browser cache.',
     ],
     [
       'Claims of services that do not exist (e.g., data deletion requests for data not collected).',
@@ -534,23 +532,23 @@ export const guidePages: GuidePage[] = [
     [],
     makeFaq(
       'Does this site use cookies?',
-      'This site does not set or read first-party cookies. The third-party ad service may use cookie or similar technologies as part of its ad delivery operation. Trust pages and 404 do not display ads.',
+      'No. This site does not set or read cookies.',
       'Does this site track me?',
-      'No first-party tracking scripts or analytics are used. Content pages include one third-party Native Banner ad. The ad service may process browser, device, and network/IP data for ad delivery and measurement.',
+      'No. There are no analytics scripts, no tracking pixels, and no third-party data collection of any kind.',
       'Can I opt out of data collection?',
-      'There is no first-party data collection to opt out of. The third-party ad service operates independently. Consult the ad service\'s own privacy policy for its data practices.',
+      'There is no data collection to opt out of. The site operates entirely as a read-only public resource.',
       'Are there ads on this site?',
-      'Selected content pages display one third-party Native Banner. Trust pages (Sources, About, Privacy) and 404 do not display ads.',
+      'No. Third-party advertising is not present. This site has no active advertising.',
     ),
     [
       { q: 'Does bookmarking this site work offline?',
         a: 'Your browser may cache pages you have visited. This is standard browser behavior. This site does not provide a dedicated offline mode or app.' },
       { q: 'Is this site safe to visit?',
-        a: 'This site has no accounts, no login, and no first-party analytics or tracking. Content pages include one third-party Native Banner ad served by the ad network. It is a static reference site.' },
+        a: 'This site has no accounts, no login, no analytics, no tracking, and no active advertising scripts. It is a static read-only reference site.' },
       { q: 'Does this site collect my IP address?',
-        a: 'No. This static site does not collect any personal data through first-party servers. The third-party ad service may process network/IP information as part of its normal ad delivery operation.' },
+        a: 'No. This static site does not collect any personal data. There are no server-side logging systems that record visitor IP addresses on this guide.' },
       { q: 'Are there any third-party services on this site?',
-        a: 'Content pages include one third-party Native Banner ad served by the effectivecpmnetwork.com ad service. The ad service may process browser, device, and network/IP data for ad delivery and measurement. No other third-party services are used. Trust pages and 404 do not display ads.' },
+        a: 'This site uses no third-party analytics, advertising, or tracking services. External links to Steam open in a new tab.' },
     ],
   ),
 ];

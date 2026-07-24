@@ -16,7 +16,7 @@ const DIST = join(ROOT, 'dist');
 const OUT_DIR = process.env.SCREENSHOT_OUT_DIR ?? join(ROOT, 'qa-screenshots');
 
 const PORT = 4321;
-const ROUTES = ['/', '/guide/', '/characters/', '/build-system/'];
+const ROUTES = ['/', '/guide/', '/characters/', '/build-system/', '/co-op/', '/updates/'];
 const MIME = {
   '.html': 'text/html',
   '.css': 'text/css',

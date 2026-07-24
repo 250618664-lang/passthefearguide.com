@@ -61,19 +61,19 @@ const guide = enabledGuides.find((g) => g.slug === 'updates')!;
     <!-- Release-date conflict card — direct source links -->
     <section class="section" aria-labelledby="conflict-title">
       <h2 id="conflict-title">Release-Date Conflict — check both sources</h2>
-      <p>Two official Steam surfaces currently disagree on the launch date. Both are first-party. Do not assume one is correct without verifying directly.</p>
+      <p>As last successfully checked on 2026-07-20, two official Steam surfaces listed different planned release dates. Both are first-party surfaces. This guide does not choose between them — verify directly on Steam for the authoritative current listing.</p>
       <div class="conflict-row">
         <div class="conflict-source">
           <strong>Steam Store listing</strong>
           <span>Observed: 2026-07-20</span>
           <a href="https://store.steampowered.com/app/3561220/Pass_the_Fear/" target="_blank" rel="nofollow">store.steampowered.com</a>
-          <span class="muted">Shows July 22, 2026</span>
+          <span class="muted">Showed July 22, 2026 (last checked 2026-07-20)</span>
         </div>
         <div class="conflict-source">
           <strong>Official Steam Community announcement</strong>
           <span>Published: June 14, 2026</span>
           <a href="https://steamcommunity.com/app/3561220" target="_blank" rel="nofollow">steamcommunity.com/app/3561220</a>
-          <span class="muted">Says July 23, 2026</span>
+          <span class="muted">Said July 23, 2026 (last checked 2026-07-20)</span>
         </div>
       </div>
     </section>
@@ -99,7 +99,7 @@ const guide = enabledGuides.find((g) => g.slug === 'updates')!;
 
       <details>
         <summary>Which date should I use for my calendar?</summary>
-        <p>Check both the Steam store page and the Steam Community hub directly. The conflict has not been resolved as of the last check on 2026-07-20. Do not commit to one date until you have verified the current listing.</p>
+        <p>Check both the Steam store page and the Steam Community hub directly. As of the last successful check on 2026-07-20, both dates were still listed. Use whichever date the Steam store shows at the time you check — this guide does not choose between them and will update after a confirmed official change.</p>
       </details>
 
       <details>
@@ -123,7 +123,7 @@ const guide = enabledGuides.find((g) => g.slug === 'updates')!;
       </details>
     </section>
 
-    <!-- Checklist -->
+    <!-- Pre-launch verification checklist -->
     <section class="section" aria-labelledby="checklist-title">
       <h2 id="checklist-title">Pre-launch verification checklist</h2>
       <ul class="checklist">
@@ -153,8 +153,13 @@ const guide = enabledGuides.find((g) => g.slug === 'updates')!;
   .conflict-row {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     margin-top: 0.75rem;
+  }
+  @media (min-width: 480px) {
+    .conflict-row {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
   }
   .conflict-source {
     background: color-mix(in srgb, #d6a65e 10%, var(--card-color));
